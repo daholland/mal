@@ -1,0 +1,122 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malfcli/malfcli.step0_repl.fsproj": {}
+  },
+  "projects": {
+    "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malfcli/malfcli.step0_repl.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malfcli/malfcli.step0_repl.fsproj",
+        "projectName": "malfcli.step0_repl",
+        "projectPath": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malfcli/malfcli.step0_repl.fsproj",
+        "packagesPath": "/home/daholland/.nuget/packages/",
+        "outputPath": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malfcli/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/daholland/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malflib/malflib.fsproj": {
+                "projectPath": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malflib/malflib.fsproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[5.0.0, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.301/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malflib/malflib.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malflib/malflib.fsproj",
+        "projectName": "malflib",
+        "projectPath": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malflib/malflib.fsproj",
+        "packagesPath": "/home/daholland/.nuget/packages/",
+        "outputPath": "/home/daholland/monogameprojs/mal/impls/myfsharp/MalFsharp/src/malflib/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/daholland/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[5.0.0, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.301/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

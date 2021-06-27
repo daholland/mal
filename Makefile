@@ -50,7 +50,7 @@ include Makefile.impls
 # General command line settings
 #
 
-MAL_IMPL = js
+MAL_IMPL = myfsharp
 
 # Path to loccount for counting LOC stats
 LOCCOUNT = loccount
