@@ -1,0 +1,8 @@
+**/*.dll
+**/*.pdb
+
+src/malfcli/bin
+src/malflib/bin
+
+src/malfcli/obj
+src/malflib/obj

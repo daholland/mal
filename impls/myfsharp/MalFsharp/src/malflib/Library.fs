@@ -9,6 +9,11 @@
 //                     | MalfVector
 //                     | MalfHashMap
 
+type MalfReaderMacro = MalfReaderQuote
+                     | MalfReaderQuasiquote
+                     | MalfReaderUnquote
+                     | MalfReaderSpliceUnquote
+                     | MalfReaderDeref
 
 type MalfType = MalfString of string
               | MalfNumber of float
@@ -19,6 +24,7 @@ type MalfType = MalfString of string
               | MalfList of MalfType list
               | MalfVector of MalfType array
               | MalfHashMap of Map<string,MalfType>
+              | MalfReaderMacro of macroType: MalfReaderMacro * macroInner: MalfType
 
 
 
@@ -110,7 +116,27 @@ module Reader =
     let malflist = (listBetweenStrings "(" ")" malfval MalfList) //.>> ws
     let malfvec = (listBetweenStrings "[" "]" malfval (Array.ofList >> MalfVector))
 
-    do malfvalref := choice [malfstring
+    let buildReader readerSym =
+        match readerSym with
+        | "'" -> pchar (char readerSym) >>. malfval |>> (fun x -> MalfReaderMacro(MalfReaderQuote, x))
+        | "`" ->   pchar (char readerSym) >>. malfval |>> (fun x -> MalfReaderMacro(MalfReaderQuasiquote, x))
+        | "~" -> pchar (char readerSym) >>. malfval |>> (fun x -> MalfReaderMacro(MalfReaderUnquote, x))
+        | "@" -> pchar (char readerSym) >>. malfval |>> (fun x -> MalfReaderMacro(MalfReaderDeref, x))
+        | "~@" -> pstring readerSym >>. malfval |>> (fun x -> MalfReaderMacro(MalfReaderSpliceUnquote, x))
+        | _ -> fail "invalid reader macro created"
+
+
+    let malfquote = pchar '\'' >>. malfval |>> (fun x -> MalfReaderMacro(MalfReaderQuote, x))
+
+    let malfreader = choice [buildReader "~@"
+                             buildReader "'"
+                             buildReader "`"
+                             buildReader "~"
+                             buildReader "@"
+                             ]
+
+    do malfvalref := choice [malfreader
+                             malfstring
                              malfnumber
                              malftrue
                              malffalse
@@ -135,6 +161,8 @@ module Reader =
 
 let Read_d a = Reader.test Reader.malf a
 let Read a = Reader.parseMalfString a
+
+
 
 let Eval a = a
 
@@ -165,6 +193,7 @@ module Printer =
         | MalfList inner -> printlist inner
         | MalfVector inner -> printvector inner
         | MalfHashMap inner -> string inner
+        | MalfReaderMacro (macrotype, inner) -> string (macrotype, inner)
 
 let Print a = Printer.printmalftype a //printmaltype instead??
 
