@@ -58,7 +58,7 @@ module Reader =
     let malfnil = stringReturn "nil" MalfNil
     let malftrue = stringReturn "true" (MalfBool true)
     let malffalse = stringReturn "false" (MalfBool false)
-
+    
     let malfnumber = pfloat |>> MalfNumber
 
     let str s = pstring s
@@ -162,7 +162,7 @@ module Reader =
 let Read_d a = Reader.test Reader.malf a
 let Read a = Reader.parseMalfString a
 
-
+let PostRead a = a //transform reader macros
 
 let Eval a = a
 
@@ -201,4 +201,4 @@ let Test a =
     // printfn "tet!"
     a
 
-let REP a = a |> Read |> Eval |> Test |> Print
+let REP a = a |> Read |> PostRead |> Eval |> Test |> Print
