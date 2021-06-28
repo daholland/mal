@@ -10,6 +10,8 @@ from select import select
 
 # Pseudo-TTY and terminal manipulation
 import pty, array, fcntl, termios
+from rich.console import Console
+console = Console()
 
 IS_PY_3 = sys.version_info[0] == 3
 
@@ -25,7 +27,7 @@ def log(data, end='\n'):
     if log_file:
         log_file.write(data + end)
         log_file.flush()
-    print(data, end=end)
+    console.print(data, "\n[blue]==============================[/blue]\n", end=end)
     sys.stdout.flush()
 
 sep = "\n"
@@ -304,22 +306,25 @@ while t.next():
             pass_cnt += 1
         elif (re.search(expects[0], res, re.S) or
                 re.search(expects[1], res, re.S)):
-            log(" -> SUCCESS")
+            log(" -> [bold green]SUCCESS[/bold green]")
             pass_cnt += 1
         else:
             if t.soft and not args.hard:
                 log(" -> SOFT FAIL (line %d):" % t.line_num)
                 soft_fail_cnt += 1
-                fail_type = "SOFT "
+                fail_type = "[misty_rose3]SOFT[/misty_rose3] "
             else:
                 log(" -> FAIL (line %d):" % t.line_num)
                 fail_cnt += 1
                 fail_type = ""
             log("    Expected : %s" % repr(expects[0]))
             log("    Got      : %s" % repr(res))
-            failed_test = """%sFAILED TEST (line %d): %s -> [%s,%s]:
-    Expected : %s
-    Got      : %s""" % (fail_type, t.line_num, t.form, repr(t.out),
+            failed_test = """%s[bold red]FAILED TEST[/bold red] (line [green]%d[/green]):
+            %s -> [%s,%s]:
+
+    Expected : [bold white]%s[/bold white]
+
+    Got      : [bold white]%s[/bold white]""" % (fail_type, t.line_num, t.form, repr(t.out),
                         t.ret, repr(expects[0]), repr(res))
             failures.append(failed_test)
     except:
@@ -335,9 +340,9 @@ if len(failures) > 0:
 
 results = """
 TEST RESULTS (for %s):
-  %3d: soft failing tests
-  %3d: failing tests
-  %3d: passing tests
+  [bright_magenta]%3d[/bright_magenta]: soft failing tests
+  [red]%3d[/red]: failing tests
+  [green]%3d[/green]: passing tests
   %3d: total tests
 """ % (args.test_file, soft_fail_cnt, fail_cnt,
         pass_cnt, test_cnt)

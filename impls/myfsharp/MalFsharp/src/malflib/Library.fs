@@ -58,13 +58,15 @@ module Reader =
     let str s = pstring s
 
     let stringLiteral =
-        let escape = anyOf "\"\\/bfnrt"
+        let escape = anyOf "\"\\/bfnrt" <??> "escape"
                      |>> function
                          | 'b' -> "\b"
                          | 'f' -> "\u000C"
                          | 'n' -> "\n"
                          | 'r' -> "\r"
                          | 't' -> "\t"
+                         | '\\'-> "\\"
+                         | '\"' -> "\""
                          | c -> string c
 
         let unicodeEscape =
@@ -85,7 +87,8 @@ module Reader =
 
     let malfval, malfvalref = createParserForwardedToRef()
 
-    let ws = spaces
+    let ws = opt (many (pchar ',')) >>. spaces
+
     let malfsym =
         let isSymbolFirstCharacter c = isLetter c || c = '_' || c = '+'
         let isSymbolChar c = isLetter c || c = '-' || c = '!' || c = '?' || c = '*' || c = '_'
@@ -98,12 +101,14 @@ module Reader =
 
 // MalfList (MalfSymbol MalfNumber MalfList(MalfSym MalfNumber MalfNumber
 
+    let skipcomma = skipString "," |> ignore
 
     let listBetweenStrings sOpen sClose pElement f =
-        between (str sOpen) (ws >>. str sClose)
-                (ws >>. (sepEndBy (pElement) (str " " .>> ws )) .>> ws |>> f)
+        between (ws >>. str sOpen) (ws >>. str sClose)
+                (ws >>. (sepEndBy (pElement) (ws)) .>> ws |>> f)
 
     let malflist = (listBetweenStrings "(" ")" malfval MalfList) //.>> ws
+    let malfvec = (listBetweenStrings "[" "]" malfval (Array.ofList >> MalfVector))
 
     do malfvalref := choice [malfstring
                              malfnumber
@@ -111,13 +116,20 @@ module Reader =
                              malffalse
                              malfnil
                              malfsym
-                             malflist]
+                             malflist
+                             malfvec
+                             ]
 
     let malf = ws >>. malfval .>> ws .>> eof
 
+    let parseMalfParseFailureEOFMessage (str: string) =
+        if str.Contains("end of the input stream")
+          then "EOF"
+          else str
+
     let parseMalfString str = match run malf str with
                               | Success(result, _, _) -> result
-                              | Failure(errMsg, _, _) -> MalfString errMsg
+                              | Failure(errMsg, parseError, _) -> MalfString (parseMalfParseFailureEOFMessage errMsg)
 
 
 
@@ -129,27 +141,35 @@ let Eval a = a
 module Printer =
     let pr_str = ()
 
+    let escape_chars str =
+        String.collect (function
+                        | '"' -> "\\\""
+                        | '\\' -> "\\\\"
+                        | c -> string c) str
+
     let rec printlist l =
         let inner = List.map printmalftype l
-        printfn "asdfasdf"
-        for foo in inner do printfn "%s" foo
+        // for foo in inner do printfn "%s" foo
         "(" + (String.concat " " (Seq.ofList inner)) + ")"
+    and printvector v =
+        let inner = Array.map printmalftype v
+        "[" + (String.concat " " (Seq.ofArray inner)) + "]"
     and printmalftype m =
         match m with
-        | MalfString inner -> "\"" + inner + "\""
+        | MalfString inner -> "\"" + escape_chars inner + "\""
         | MalfNumber inner -> string inner
-        | MalfBool inner -> string inner
+        | MalfBool inner -> (string inner).ToLower()
         | MalfNil -> "nil"
         | MalfSymbol inner -> inner
         | MalfKeyword inner -> inner
         | MalfList inner -> printlist inner
-        | MalfVector inner -> string inner
+        | MalfVector inner -> printvector inner
         | MalfHashMap inner -> string inner
 
 let Print a = Printer.printmalftype a //printmaltype instead??
 
 let Test a =
-    printfn "tet!"
+    // printfn "tet!"
     a
 
 let REP a = a |> Read |> Eval |> Test |> Print

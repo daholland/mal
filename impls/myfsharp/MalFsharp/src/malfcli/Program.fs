@@ -15,9 +15,8 @@ open Malf
 
 [<EntryPoint>]
 let main argv =
-    printfn "asdfasdfasdf!!!"
-    for a in argv do printfn "argv: %s" a
-    printfn "arg len: %d" argv.Length
+    // for a in argv do printfn "argv: %s" a
+    // printfn "arg len: %d" argv.Length
 
     let mutable continueRead = true
 
@@ -29,7 +28,7 @@ let main argv =
                 match input with
                  | null -> continueRead <- false
                  | inputString -> Malf.REP inputString
-                                    |> printfn "%sfffff"
+                                    |> printfn "%s"
     0 // return an integer exit code
       //
       //
