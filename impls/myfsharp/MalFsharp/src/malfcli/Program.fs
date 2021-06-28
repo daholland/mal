@@ -1,26 +1,38 @@
-// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
-
 open System
+open Malf
 
-// Define a function to construct a message to print
-let from whom =
-    sprintf "from %s" whom
 
-let READ a = a
-let EVAL a = a
-let PRINT a = a
-
-let REP =
-    let mutable continueRead = true
-    while continueRead do
-        printf "user> "
-        let input = Console.ReadLine()
-        match input with
-        | null -> continueRead <- false
-        | inputString -> inputString |> READ |> EVAL |> PRINT |> printfn "%s"
+// let inputloop =
+//     let mutable continueRead = true
+//     while continueRead do
+//         printf "user> "
+//         let input = Console.ReadLine()
+//         match input with
+//         | null -> continueRead <- false
+//         | inputString -> Malf.REP inputString
+//                          |> printfn "%s"
 
 
 [<EntryPoint>]
 let main argv =
-    REP
+    printfn "asdfasdfasdf!!!"
+    for a in argv do printfn "argv: %s" a
+    printfn "arg len: %d" argv.Length
+
+    let mutable continueRead = true
+
+    if argv.Length > 0
+         then (Malf.REP argv.[0]) |> printfn "%s"
+         else while continueRead do
+                printf "user> "
+                let input = Console.ReadLine()
+                match input with
+                 | null -> continueRead <- false
+                 | inputString -> Malf.REP inputString
+                                    |> printfn "%sfffff"
     0 // return an integer exit code
+      //
+      //
+      //
+      //
+      // (projectile-run-project "cd ../../..; ./runmaltests 2")
